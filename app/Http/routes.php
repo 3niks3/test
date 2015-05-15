@@ -12,3 +12,5 @@
 */
 
 get('/',['as'=>'home','uses'=> 'PageController@index']);
+
+// test
