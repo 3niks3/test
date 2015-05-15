@@ -12,10 +12,5 @@
 */
 
 get('/',['as'=>'home','uses'=> 'PageController@index']);
-<<<<<<< HEAD
 get('/main',['as' =>'main','uses' => 'PageController@menu']);
-=======
 
-// test
-// test 2
->>>>>>> 419cf78f3c4e74b040f21e558a6def61d36efd8f
