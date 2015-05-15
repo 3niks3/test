@@ -12,5 +12,5 @@
 */
 
 get('/',['as'=>'home','uses'=> 'PageController@index']);
+get('/main',['as' =>'main','uses' => 'PageController@menu']);
 
-get('/tests1',['as'=>'test','uses'=> 'PageController@test']);
