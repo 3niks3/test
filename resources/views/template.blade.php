@@ -24,12 +24,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">iBanka</a>
+            <a class="navbar-brand" href="{{ url('/') }}">iBanka</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Sākums</a></li>
+                <li class="active"><a href="{{ url('/') }}">Sākums</a></li>
+                @if(Auth::check())
                 <li><a href="#">Maksājumi</a></li>
+                    <li><a href="{{ url('/logout') }}">Iziet</a></li>
+                @else
+                    <li><a href="{{ url('/register') }}">Reģistrēties</a></li>
+                    <li><a href="{{ url('/login') }}">Autorizēties</a></li>
+                @endif
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -37,10 +43,24 @@
 
 <div class="container">
 
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+        @if (Session::has('success'))
+            <div class="alert alert-success">
+                {{ Session::get('success') }}
+            </div>
+        @endif
 
 
-
-    <div class="panel panel-default">
+        <div class="panel panel-default">
         <div class="panel-body">
             @yield('content')
         </div>
