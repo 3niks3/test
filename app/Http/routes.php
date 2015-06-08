@@ -24,4 +24,9 @@ post('/login',['as' =>'loginPost','uses' => 'PageController@loginPost']);
 // routes require authorization
 $router->group(['middleware' => 'auth'], function() {
 	get('/logout',['as' =>'logout','uses' => 'PageController@logout']);
+	get('/account',['as' =>'account','uses' => 'AccountController@account']);
+	get('/transactions',['as' =>'transactions','uses' => 'AccountController@transactions']);
+
+	// POSTS
+	post('/transactions',['as' =>'transactionsPost','uses' => 'AccountController@transactionsPost']);
 });

@@ -28,9 +28,9 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{{ url('/') }}">Sākums</a></li>
                 @if(Auth::check())
-                <li><a href="#">Maksājumi</a></li>
+                    <li class="active"><a href="{{ url('/account') }}">Mans konts</a></li>
+                    <li><a href="{{ url('/transactions') }}">Maksājumi</a></li>
                     <li><a href="{{ url('/logout') }}">Iziet</a></li>
                 @else
                     <li><a href="{{ url('/register') }}">Reģistrēties</a></li>
