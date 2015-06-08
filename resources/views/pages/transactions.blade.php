@@ -1,9 +1,16 @@
 @extends('template')
 @section('content')
 
-    <div class="row">
+    <ul class="nav nav-tabs h5" role="tablist" id="myTab">
+        <li role="presentation" class="active"><a href="#payment" aria-controls="payment" role="tab" data-toggle="tab">Veikt maksājumu</a></li>
+        <li role="presentation"><a href="#transactions" aria-controls="transactions" role="tab" data-toggle="tab">Transakcijas</a></li>
+    </ul>
 
-        <div class="col-md-5">
+    <hr/>
+
+        <div class="tab-content">
+
+        <div role="tabpanel" class="col-md-6 tab-pane fade in active" id="payment">
             <legend>Veikt maksājumu</legend>
 
             <form action="{{ route('transactionsPost') }}" method="POST">
@@ -33,24 +40,70 @@
 
         </div>
 
-        <div class="col-md-7">
+            <div role="tabpanel" class="col-md-12 tab-pane fade" id="transactions">
+
+                <div class="col-md-6">
             <legend>Izpildītie maksājumi</legend>
 
-            <table class="table table-bordered table-stripped">
-                @foreach($transactions as $transaction => $t)
+            <table class="table table-bordered table-striped table-condensed small">
+                <thead>
+                <th>ID</th>
+                <th>No</th>
+                <th>Uz</th>
+                <th>Summa</th>
+                <th>Maksājuma mērķis</th>
+                <th>Datums</th>
+                </thead>
+                <tbody>
+                @for($i=0; $i<sizeof($transactions['out']); $i++)
+                @foreach($transactions['out'][$i] as $transaction => $t)
                     <tr>
                         <td>{{ $t->trans_ID }}</td>
-                        <td>{{ $t->trans_sum }}</td>
+                        <td>{{ $t->trans_account_ID_from }}</td>
+                        <td>{{ $t->trans_account_ID_to }}</td>
+                        <td class="danger">- &euro; {{ number_format($t->trans_sum, 2, '.', ' ') }}</td>
                         <td>{{ $t->trans_note }}</td>
                         <td>{{ date('F j, Y (H:i:s)', strtotime($t->trans_timestamp)) }}</td>
                     </tr>
-                    @endforeach
+                @endforeach
+                @endfor
+                </tbody>
             </table>
+                    </div>
+
+                <div class="col-md-6">
+
+            <legend>Saņemtie maksājumi</legend>
+
+            <table class="table table-bordered table-striped table-condensed small">
+                <thead>
+                <th>ID</th>
+                <th>No</th>
+                <th>Uz</th>
+                <th>Summa</th>
+                <th>Maksājuma mērķis</th>
+                <th>Datums</th>
+                </thead>
+                <tbody>
+                @for($i=0; $i<sizeof($transactions['in']); $i++)
+                    @foreach($transactions['in'][$i] as $transaction => $t)
+                        <tr>
+                            <td>{{ $t->trans_ID }}</td>
+                            <td>{{ $t->trans_account_ID_from }}</td>
+                            <td>{{ $t->trans_account_ID_to }}</td>
+                            <td class="success">+ &euro; {{ number_format($t->trans_sum, 2, '.', ' ') }}</td>
+                            <td>{{ $t->trans_note }}</td>
+                            <td>{{ date('F j, Y (H:i:s)', strtotime($t->trans_timestamp)) }}</td>
+                        </tr>
+                    @endforeach
+                @endfor
+                </tbody>
+            </table>
+                    </div>
 
         </div>
-    </div>
 
-
+        </div> <!-- end tabs -->
 
 
 @stop

@@ -12,37 +12,49 @@ use Input;
 
 class AccountController extends Controller {
 
+	// Iegūst visus lietotāja kontus
 	public function getAccounts($id){
 		$accounts = Account::where('account_user_ID', $id)->get();
 		return $accounts;
 	}
 
+	// Iegūst visas izejošās un ienākošās konta transakcijas
 	public function getTransactions($id){
-		$transactions = Transaction::where('trans_account_ID_from', $id)->get();
+		$transactions['out'] = Transaction::where('trans_account_ID_from', $id)->orderBy('trans_ID', 'asc')->get();
+		$transactions['in'] = Transaction::where('trans_account_ID_to', $id)->orderBy('trans_ID', 'asc')->get();
 		return $transactions;
 	}
 
+	// Kontu sadaļa
 	public function account(){
 		$accounts = $this->getAccounts(Auth::user()->user_ID);
 		return view('pages.account')->with('accounts', $accounts);
 	}
 
+	// Maksājumu un Transakciju sadaļa
 	public function transactions(){
+
+		// Iegūst lietotāja kontus
 		$accounts = $this->getAccounts(Auth::user()->user_ID);
 
-		// paņem tikai 1.konta transakcijas :D , pagaidām..
-		$first_account = $accounts->first();
+		// Iegūst visu lietotāja kontu transakcijas
+		$transactions = array();
+		foreach($accounts as $account => $a){
+			$transactions['out'][] = $this->getTransactions($a['account_ID'])['out'];
+			$transactions['in'][] = $this->getTransactions($a['account_ID'])['in'];
+		}
 
-		$transactions = $this->getTransactions($first_account->account_ID);
-
+		// Atgriež kontu un transakciju informāciju lapā
 		return view('pages.transactions')->with([
 			'accounts' => $accounts,
 			'transactions' => $transactions
 		]);
 	}
 
+	// Izpilda maksājumu un izveido jaunu transakciju
 	public function transactionsPost(){
 
+		// Ievades pārbaude
 		$v = Validator::make(Input::all(), [
 			'trans_account_ID_from' => 'required|numeric',
 			'trans_account_number' => 'required|alpha_num|min:4',
@@ -61,20 +73,24 @@ class AccountController extends Controller {
 
 			$get_to_account = Account::where('account_number', $to);
 
+			// Pārbauda vai saņēmēja konts vispār eksistē
 			if($get_to_account->count() > 0){
 				$to = $get_to_account->first()->account_ID;
 
+				// Izveido jaunu transakciju
 				$transaction = new Transaction();
 				$transaction->trans_account_ID_from = $from;
 				$transaction->trans_account_ID_to = $to;
 				$transaction->trans_sum = $sum;
 				$transaction->trans_note = $note;
 
+				// Atjauno konta bilanci maksātājam
 				$update_from = Account::find($from);
-				$update_from->account_balance = $update_from->account_balance - $sum;
+				$update_from->account_balance = $update_from->account_balance - abs($sum);
 
+				// Atjauno konta bilanci saņēmējam
 				$update_to = Account::find($to);
-				$update_to->account_balance = $update_to->account_balance + $sum;
+				$update_to->account_balance = $update_to->account_balance + abs($sum);
 
 				if($transaction->save() && $update_from->save() && $update_to->save()){
 
