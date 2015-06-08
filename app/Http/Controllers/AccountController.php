@@ -38,7 +38,8 @@ class AccountController extends Controller {
 		$accounts = $this->getAccounts(Auth::user()->user_ID);
 
 		// Iegūst visu lietotāja kontu transakcijas
-		$transactions = array();
+		$transactions['out'] = array();
+		$transactions['in'] = array();
 		foreach($accounts as $account => $a){
 			$transactions['out'][] = $this->getTransactions($a['account_ID'])['out'];
 			$transactions['in'][] = $this->getTransactions($a['account_ID'])['in'];

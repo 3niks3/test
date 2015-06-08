@@ -1,4 +1,6 @@
 @extends('template')
-    @section('content')
-        <p>Main menu</p>
-    @stop
+@section('content')
+
+    <legend>Esi sveicināts iBankā!</legend>
+
+@stop

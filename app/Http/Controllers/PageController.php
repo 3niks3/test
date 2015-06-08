@@ -8,6 +8,7 @@ use Validator;
 use Input;
 use Hash;
 use App\User;
+use App\Account;
 use Config;
 use Auth;
 
@@ -15,7 +16,7 @@ class PageController extends Controller {
 
 	public function index()
 	{
-		return view('pages.login');
+		return view('pages.main');
     }
 
     public function menu()
@@ -51,14 +52,27 @@ class PageController extends Controller {
 			$user_login = e(Input::get('user_login'));
 			$user_password = e(Input::get('user_password'));
 
-			$user = User::create([
-				'user_login' => $user_login,
-				'user_password' => Hash::make($user_password),
-				'user_type_ID' => 1,
-				'user_active' => 1,
-			]);
+			$user = new User();
+			$user->user_login = $user_login;
+			$user->user_password = Hash::make($user_password);
+			$user->user_type_ID = 1;
+			$user->user_active = 1;
 
-			if($user){
+			if($user->save()){
+
+				// Katram lietotājam izveido 2 kontus
+				$account = new Account();
+				$account->account_number = 'LV'.rand(100000000000000, 900000000000000).strtoupper(str_random(4));
+				$account->account_user_ID = $user->user_ID;
+				$account->account_balance = 1000;
+				$account->save();
+
+				$account = new Account();
+				$account->account_number = 'LV'.rand(100000000000000, 900000000000000).strtoupper(str_random(4));
+				$account->account_user_ID = $user->user_ID;
+				$account->account_balance = 1000;
+				$account->save();
+
 				return redirect('/')->with('success', 'Reģistrācija veiksmīga!');
 			}
 		}
@@ -69,7 +83,7 @@ class PageController extends Controller {
 		$user_password = e(Input::get('user_password'));
 
 		if (Auth::attempt(['user_login' => $user_login, 'password' => $user_password])) {
-			return redirect('/')->with('success', 'Tu esi autorizējies sistēmā!');
+			return redirect('/account')->with('success', 'Tu esi autorizējies sistēmā!');
 		} else {
 			return redirect('/')->withErrors('Autorizācija neveiksmīga.');
 		}
