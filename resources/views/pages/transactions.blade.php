@@ -29,11 +29,11 @@
                 </div>
                 <div class="form-group">
                     <label><b>Summa</b></label>
-                    <input name="trans_sum" type="number" min="1" class="form-control" placeholder="Ievadi summu">
+                    <input name="trans_sum" type="number" min="1" step="0.01" class="form-control" placeholder="Ievadi summu">
                 </div>
                 <div class="form-group">
                     <label><b>Maksājuma mērķis</b></label>
-                    <input name="trans_note" type="text" class="form-control" placeholder="Ievadi maksājuma mērķi">
+                    <input name="trans_note" type="text" class="form-control" placeholder="Ievadi maksājuma mērķi" required>
                 </div>
                 <button type="submit" class="btn btn-success">Izpildīt maksājumu</button>
             </form>

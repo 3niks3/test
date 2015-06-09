@@ -16,9 +16,6 @@ class CreateTypesTable extends Migration {
 		{
 			$table->increments('type_ID');
 			$table->string('type');
-			
-			// created_at, updated_at DATETIME
-			$table->timestamps();
 		});
 	}
 

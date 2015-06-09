@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration {
 		{
 			$table->increments('user_ID');
 			$table->string('user_login', 6);
-			$table->string('user_password', 512);
+			$table->string('user_password', 60);
 			$table->integer('user_type_ID')->unsigned();
 			$table->boolean('user_active')->default(true);
 			

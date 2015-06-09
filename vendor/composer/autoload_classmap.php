@@ -9,6 +9,7 @@ return array(
     'CreateAccountsTable' => $baseDir . '/database/migrations/2015_05_26_185042_create_accounts_table.php',
     'CreateCodesTable' => $baseDir . '/database/migrations/2015_05_26_184501_create_codes_table.php',
     'CreateLoginHistoryTable' => $baseDir . '/database/migrations/2015_05_26_190918_create_login_history_table.php',
+    'CreateSessionTable' => $baseDir . '/database/migrations/2015_06_09_042743_create_session_table.php',
     'CreateTransactionsTable' => $baseDir . '/database/migrations/2015_05_26_185333_create_transactions_table.php',
     'CreateTypesTable' => $baseDir . '/database/migrations/2015_05_26_181423_create_types_table.php',
     'CreateUsersTable' => $baseDir . '/database/migrations/2015_05_26_183040_create_users_table.php',
@@ -430,4 +431,6 @@ return array(
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs/SessionHandlerInterface.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/Text/Template.php',
+    'TypeSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
+    'UserTableSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
 );

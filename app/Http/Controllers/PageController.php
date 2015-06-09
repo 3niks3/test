@@ -11,6 +11,7 @@ use App\User;
 use App\Account;
 use Config;
 use Auth;
+use Session;
 
 class PageController extends Controller {
 
@@ -85,12 +86,14 @@ class PageController extends Controller {
 		if (Auth::attempt(['user_login' => $user_login, 'password' => $user_password])) {
 			return redirect('/account')->with('success', 'Tu esi autorizējies sistēmā!');
 		} else {
-			return redirect('/')->withErrors('Autorizācija neveiksmīga.');
+			return redirect('/login')->withErrors('Autorizācija neveiksmīga.');
 		}
 	}
 
 	public function logout(){
-		Auth::logout();
+		//Auth::logout();
+        Session::flush();
+
 		return redirect('/')->with('success', 'Tu esi veiksmīgi izgājis no sistēmas..');
 	}
 
