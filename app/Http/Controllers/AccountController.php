@@ -73,11 +73,17 @@ class AccountController extends Controller {
 			$note = e(Input::get('trans_note'));
 
 			$get_to_account = Account::where('account_number', $to);
+            $get_from_account = Account::where('account_ID', $from);
 
 			// Pārbauda vai saņēmēja konts vispār eksistē
 			if($get_to_account->count() > 0){
 				$to = $get_to_account->first()->account_ID;
+                $account_balance= $get_from_account->first()->account_balance;
 
+                if($account_balance < $sum)
+                {
+                    return redirect()->back()->withErrors('Konta bilance ir par mazu');
+                }
 				// Izveido jaunu transakciju
 				$transaction = new Transaction();
 				$transaction->trans_account_ID_from = $from;
