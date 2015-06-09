@@ -25,11 +25,11 @@
                 </div>
                 <div class="form-group">
                     <label><b>Saņēmēja konts</b></label>
-                    <input name="trans_account_number" type="text" class="form-control" placeholder="Ievadi saņēmēja kontu">
+                    <input name="trans_account_number" type="text" class="form-control" placeholder="Ievadi saņēmēja kontu" required>
                 </div>
                 <div class="form-group">
                     <label><b>Summa</b></label>
-                    <input name="trans_sum" type="number" min="1" step="0.01" class="form-control" placeholder="Ievadi summu">
+                    <input name="trans_sum" type="number" min="1" step="0.01" class="form-control" placeholder="Ievadi summu" required>
                 </div>
                 <div class="form-group">
                     <label><b>Maksājuma mērķis</b></label>
