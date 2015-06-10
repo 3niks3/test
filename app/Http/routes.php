@@ -27,6 +27,11 @@ $router->group(['middleware' => 'auth'], function() {
 	get('/account',['as' =>'account','uses' => 'AccountController@account']);
 	get('/transactions',['as' =>'transactions','uses' => 'AccountController@transactions']);
 
+	get('/api',['as' =>'api','uses' => 'AccountController@api']);
+
+	// testiem, skatit kontrolieri, lai mainitu datus un ieguutu hash
+	get('/hash',['as' =>'hash','uses' => 'AccountController@hash_openssl']);
+
 	// POSTS
 	post('/transactions',['as' =>'transactionsPost','uses' => 'AccountController@transactionsPost']);
 });

@@ -1,6 +1,6 @@
 @extends('template')
 @section('content')
 
-    <legend>Esi sveicināts iBankā!</legend>
+    <legend class="success">Esi sveicināts iBankā!</legend>
 
 @stop

@@ -84,7 +84,7 @@ class PageController extends Controller {
 		$user_password = e(Input::get('user_password'));
 
 		if (Auth::attempt(['user_login' => $user_login, 'password' => $user_password])) {
-			return redirect('/account')->with('success', 'Tu esi autorizējies sistēmā!');
+			return redirect()->intended('/');
 		} else {
 			return redirect('/login')->withErrors('Autorizācija neveiksmīga.');
 		}
