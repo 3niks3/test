@@ -170,8 +170,8 @@ class AccountController extends Controller {
 
 		/* CLIENT EDIT */
 		$data['account_from'] = 'LV-1675967407ANED'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
-		$data['payment_sum'] = 5.00;                 // ŠEIT NORĀDA PRECES CENU (nosaka veikals)
-		$data['payment_id'] = 1234;                  // ŠEIT NORĀDA RĒĶINA NR. (nosaka veikals)
+		$data['payment_sum'] = 15.00;                 // ŠEIT NORĀDA PRECES CENU (nosaka veikals)
+		$data['payment_id'] = 34;                  // ŠEIT NORĀDA RĒĶINA NR. (nosaka veikals)
 
 		$string = implode('_', $data);
 		$encrypt = openssl_encrypt($string, 'CAST5-CFB', $token1, false, $token2);
@@ -236,7 +236,7 @@ class AccountController extends Controller {
 				}
 
 				// drošības pēc, vēlreiz pārbauda ir sum un id ir float un integer.
-				if(!is_float($data['payment_sum']) || !is_int($data['payment_id'])){
+				if(!is_float($data['payment_sum']) || !is_int($data['payment_id']) || $data['payment_sum'] == 0){
 					return redirect('/')->withErrors('Nekorekta summa un/vai maksājuma ID.');
 				}
 
