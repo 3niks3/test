@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\User as User;
 use App\Account as Account;
+use \App\Company as Company;
 
 class DatabaseSeeder extends Seeder {
 
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder {
 
          $this->call('TypeSeeder');
 		 $this->call('UserTableSeeder');
+        $this->call('CompaniesSeeder');
 	}
 
 }
@@ -68,5 +70,20 @@ class TypeSeeder extends Seeder
         DB::table('types')->delete();
         DB::insert("INSERT INTO types (type) VALUES (?)",['Admin']);
         DB::insert("INSERT INTO types (type) VALUES (?)",['User']);
+    }
+}
+
+class CompaniesSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('companies')->delete();
+        $company = new Company();
+        $company->company_account_ID = 1;
+        $company->public_key= "1234567890123456";
+        $company->token1="123456";
+        $company->token2="123456";
+        $company->callback="www.linktoshop.dev/callback?payment=";
+        $company->save();
     }
 }

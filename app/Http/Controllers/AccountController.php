@@ -169,7 +169,7 @@ class AccountController extends Controller {
 		$token2 = $this->token2;
 
 		/* CLIENT EDIT */
-		$data['account_from'] = 'LV-1675967407ANED'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
+		$data['account_from'] = 'LV791638102382422EHAW'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
 		$data['payment_sum'] = 15.00;                 // ŠEIT NORĀDA PRECES CENU (nosaka veikals)
 		$data['payment_id'] = 34;                  // ŠEIT NORĀDA RĒĶINA NR. (nosaka veikals)
 

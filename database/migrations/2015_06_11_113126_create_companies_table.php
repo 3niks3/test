@@ -22,9 +22,7 @@ class CreateCompaniesTable extends Migration {
 			$table->string('token1', 8);
 			$table->string('token2', 8);
 			$table->string('callback', 255);
-
-			// created_at, updated_at DATETIME
-			$table->timestamps();
+            $table->timestamps();
 
 			// create keys
 			$table->foreign('company_account_ID')->references('account_ID')->on('accounts');
