@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Account;
 use App\Transaction;
+use App\Company;
 use Validator;
 use Input;
 
@@ -116,81 +117,122 @@ class AccountController extends Controller {
 		return redirect()->back()->withErrors('Kaut kas nogāja greizi...');
 	}
 
-	// šo funkciju var izmantot, lai testetu datus, kuri tiks nošifrēti
-	// funkciju praktiski var COPY/PASTE tam, kurš izmantos mūsu sistēmu
+	/*
+	 * Veikala API dati, ko sniedz Banka.
+	 * public_key var publiskot.
+	 * token1 un token2 jāuzglabā publiski nepieejamā vietā.
+	*/
+	protected $public_key = 'DH125F5HF1923461';
+	protected $token1 = 'QWED294A';
+	protected $token2 = 'PSA1A3GV';
+	protected $bank_link = 'http://www.bank.dev';
+
+	/*
+	 * Ar šo funkciju atgriež maksājumu
+	 * Jāņem vērā, ka Request $request ir specifiski Laravel, ja izmanto ārpus,
+	 * tad jāizmanto citas iespējas , kā dabūt URL parametrus, piemēram $_GET['payment'], attiecīgi pielabojot kodu 2 rindiņās
+	 * Visas pārējās pārbaudes veikala pusē.
+	*/
+	public function get_callback(Request $request){
+		if($request->has('payment')){
+			$token1 = $this->token1;
+			$token2 = $this->token2;
+			$payment = openssl_decrypt($request->get('payment'), 'CAST5-CFB', $token1, false, $token2);
+
+			// Izvelk ārā datus no $payment virknes, ieliek masīvā
+			$data = explode('_', $payment);
+			$payment_id = abs((int)$data[0]); // Rēķina numurs.
+			$public_key = $data[1]; // Publiskā atslēga
+
+			// Pārbauda, vai callback sūtītā publiskā atslēga atbilst veikala publiskajai atslēgai,
+			// vai sakrīt simbolu skaits, alpha_num, un rēķina ID nav 0
+			if($public_key != $this->public_key || strlen($public_key) != 16 || ctype_alnum($public_key) == false || $payment_id == 0){
+
+				// kļūdas novirza kā paši vēlas
+				die('Nekorekti dati.');
+			}
+
+			return $payment_id;
+
+		} else {
+			die('Nav maksājums.');
+		}
+	}
+
+	/*
+	 * Izveido maksājumu, kuru nošifrē un aizsūta bankai.
+	 * Izmanto dotos API datus (publisko atslēgu, tokenus)
+	*/
 	public function hash_openssl(){
+		$public_key = $this->public_key;
+		$token1 = $this->token1;
+		$token2 = $this->token2;
 
-		// jābūt precīzi šādā secībā
-		$data['account_to'] = 'LV-16405533A4G0UP';
-		$data['account_from'] = 'LV-1675967407ANED';
-		$data['payment_sum'] = 23;
-		$data['payment_id'] = 2355;
+		/* CLIENT EDIT */
+		$data['account_from'] = 'LV-1675967407ANED'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
+		$data['payment_sum'] = 5.00;                 // ŠEIT NORĀDA PRECES CENU (nosaka veikals)
+		$data['payment_id'] = 1234;                  // ŠEIT NORĀDA RĒĶINA NR. (nosaka veikals)
 
-		// saliek visus datus vienā virknē
 		$string = implode('_', $data);
+		$encrypt = openssl_encrypt($string, 'CAST5-CFB', $token1, false, $token2);
 
-		// $iv = TOKEN2
-		// $pass = TOKEN1
-		$iv = 'PSA1A3GV';
-		$pass = 'QWED294A';
+		$url = $this->bank_link.'/api?payment='.$encrypt.'&company='.$public_key;
 
-		// šifrēšanas metode
-		$method = 'CAST5-CFB';
-
-		// nošifrē datus
-		$encrypt = openssl_encrypt($string, $method, $pass, false, $iv);
-
-		// ārējiem klientiem nepieciešams pievienot $encrypt bankas linkam pašā galā: www.banka.lv/api?payment=$encrypt
-		return $encrypt;
+		return $url;
 	}
 
 	public function api(Request $request){
 
-		if(Auth::check() && $request->has('payment')){
+		if(Auth::check() && $request->has('payment') && $request->has('company')){
 
-			$accounts = $this->getAccounts(Auth::user()->user_ID);
+			$public_key = $request->get('company');
 
+			// pārbauda vai publiskā atslēgas garums ir 16, un pārbauda vai ir alpha_num
+			if(strlen($public_key) != 16 || ctype_alnum($public_key) == false){
+				return redirect('/')->withErrors('Uzņēmuma maksājuma dati ir nepareizi.');
+			}
+
+			// pārbauda vai eksistē uzņēmums ar konkrēto publisko atslēgu
+			$count = Company::where('public_key', $public_key)->count();
+			if(!$count){
+				return redirect('/')->withErrors('Uzņēmuma dati ir nepareizi.');
+			}
+
+			$company = Company::where('public_key', $public_key)->first();
+
+			// pārbauda vai uzņēmumam ir piešķirti tokeni
 			$account_has_token = false;
-
-			foreach($accounts as $account => $a){
-				if($a->token1 != NULL && $a->token2 != NULL){
-					$account_has_token = true;
-					$token1 = $a->token1;
-					$token2 = $a->token2;
-					break;
-				}
+			if($company->token1 != NULL && $company->token2 != NULL){
+				$account_has_token = true;
+				$token1 = $company->token1;
+				$token2 = $company->token2;
 			}
 
 			if($account_has_token == false){
-				return redirect('/')->withErrors('Nevienam no kontiem nav API privilēģijas.');
+				return redirect('/')->withErrors('Uzņēmuma kontam nav API privilēģijas.');
 			}
 
-			$iv = $token2;
-			$pass = $token1;
-			$method = 'CAST5-CFB'; // HARD CODED IN
-
-			$payment = openssl_decrypt($request->get('payment'), $method, $pass, false, $iv);
+			// tiek atšķifrēts maksājums
+			$payment = openssl_decrypt($request->get('payment'), 'CAST5-CFB', $token1, false, $token2);
 
 			if($payment){
 				$data = explode('_', $payment);
 
-				if(sizeof($data) != 4){
+				if(sizeof($data) != 3){
 					return redirect('/')->withErrors('Maksājuma dati nekorekti..');
 				}
 
 				// lai vieglāk saprast, pieliekam nosaukumus, un nodzēšam 0,1,2,3 keyus.
-				$data['account_to'] = $data[0];
-				$data['account_from'] = $data[1];
-				$data['payment_sum'] = (float)$data[2];
-				$data['payment_id'] = (int)$data[3];
+				$data['account_from'] = $data[0];
+				$data['payment_sum'] = (float)$data[1];
+				$data['payment_id'] = (int)$data[2];
 				unset($data[0]);
 				unset($data[1]);
 				unset($data[2]);
-				unset($data[3]);
 
-				// pārbauda, vai kāds no kontiem neeksistē
-				if(Account::where('account_number', $data['account_to'])->count() == 0 || Account::where('account_number', $data['account_from'])->count() == 0){
-					return redirect('/')->withErrors('Kontu dati ir nekorekti vai neeksistē.');
+				// pārbauda, vai sūtītāja konts eksistē
+				if(Account::where('account_number', $data['account_from'])->count() == 0){
+					return redirect('/')->withErrors('Sūtītāja konta dati ir nekorekti vai neeksistē.');
 				}
 
 				// drošības pēc, vēlreiz pārbauda ir sum un id ir float un integer.
@@ -198,7 +240,9 @@ class AccountController extends Controller {
 					return redirect('/')->withErrors('Nekorekta summa un/vai maksājuma ID.');
 				}
 
-				$account_to = Account::where('account_number', $data['account_to'])->firstOrFail()->account_ID;
+				//$company_account = Account::where('account_ID', $company->company_account_ID)->first();
+
+				$account_to = $company->company_account_ID;
 				$account_from = Account::where('account_number', $data['account_from'])->firstOrFail()->account_ID;
 				$payment_sum = $data['payment_sum'];
 				$payment_id = $data['payment_id'];
@@ -219,7 +263,16 @@ class AccountController extends Controller {
 				$update_to->account_balance = $update_to->account_balance + abs($payment_sum);
 
 				if($transaction->save() && $update_from->save() && $update_to->save()){
-					return redirect('/transactions')->with('success', 'Maksājums veiksmīgi izpildīts.');
+
+					// sūtam callback atpakaļ uz veikalu, kur norādam maksājumu (payment_id), kurš ir samaksāts.
+					// tālāk veikals pats domā, kā atzīmēt viņu pusē, ka maksājums izpildīts.
+					// sūtam TIKAI maksājuma id, tas jebkurā gadījumā būs unikāls.
+					// izmanto iepriekš nodoto public_key un tokenus.
+					$encrypt = openssl_encrypt($data['payment_id'].'_'.$public_key, 'CAST5-CFB', $token1, false, $token2);
+
+					$url = $company->callback.$encrypt;
+
+					return redirect()->to($url);
 				} else {
 					return redirect('/')->withErrors('Neizdevās saglabāt transakciju.');
 				}

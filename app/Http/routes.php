@@ -11,6 +11,9 @@
 |
 */
 
+// test callback url
+get('/callback',['as'=>'home','uses'=> 'AccountController@get_callback']);
+
 get('/',['as'=>'home','uses'=> 'PageController@index']);
 get('/main',['as' =>'main','uses' => 'PageController@menu']);
 
