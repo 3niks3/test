@@ -24,16 +24,20 @@ get('/login',['as' =>'login','uses' => 'PageController@login']);
 post('/register',['as' =>'registerPost','uses' => 'PageController@registerPost']);
 post('/login',['as' =>'loginPost','uses' => 'PageController@loginPost']);
 
+// testiem, skatit kontrolieri, lai mainitu datus un ieguutu hash
+get('/hash',['as' =>'hash','uses' => 'AccountController@hash_openssl']);
+
 // routes require authorization
 $router->group(['middleware' => 'auth'], function() {
 	get('/logout',['as' =>'logout','uses' => 'PageController@logout']);
 	get('/account',['as' =>'account','uses' => 'AccountController@account']);
 	get('/transactions',['as' =>'transactions','uses' => 'AccountController@transactions']);
 
+	get('/account/summary/{id}',['as' =>'accountSummary','uses' => 'AccountController@getAccountSummary']);
+
 	get('/api',['as' =>'api','uses' => 'AccountController@api']);
 
-	// testiem, skatit kontrolieri, lai mainitu datus un ieguutu hash
-	get('/hash',['as' =>'hash','uses' => 'AccountController@hash_openssl']);
+
 
 	// POSTS
 	post('/transactions',['as' =>'transactionsPost','uses' => 'AccountController@transactionsPost']);

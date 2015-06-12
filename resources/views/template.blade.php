@@ -10,8 +10,8 @@
     <title>iBanka</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-    <link href="./css/style.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 
 <body>
 
@@ -30,12 +30,11 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 @if(Auth::check())
-                    <li class="active"><a href="{{ url('/account') }}">Mans konts</a></li>
-                    <li><a href="{{ url('/transactions') }}">Maksājumi</a></li>
-                    <li><a href="{{ url('/logout') }}">Iziet</a></li>
+                    <li><a href="{{ url('/account') }}"><span class="glyphicon glyphicon-tasks" style="color: forestgreen;" aria-hidden="true"></span> Mani konti</a></li>
+                    <li><a href="{{ url('/transactions') }}"><span class="glyphicon glyphicon-credit-card" style="color: royalblue;" aria-hidden="true"></span> Maksājumi</a></li>
+                    <li><a href="{{ url('/logout') }}"><span class="glyphicon glyphicon-remove-sign" style="color: darkred;" aria-hidden="true"></span> Iziet</a></li>
                 @else
-                    <li><a href="{{ url('/register') }}">Reģistrēties</a></li>
-                    <li><a href="{{ url('/login') }}">Autorizēties</a></li>
+                    <li><a href="{{ url('/login') }}"><span class="glyphicon glyphicon-user" style="color: royalblue;" aria-hidden="true"></span> Autorizēties</a></li>
                 @endif
             </ul>
         </div><!--/.nav-collapse -->

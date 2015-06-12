@@ -1,7 +1,7 @@
 @extends('template')
 	@section('content')
 
-        <legend>Autorizācija</legend>
+        <legend><span class="glyphicon glyphicon-user" style="color: royalblue;" aria-hidden="true"></span> Autorizācija</legend>
 
         <div class="col-md-5">
         <form action="{{ route('loginPost') }}" method="POST">

@@ -1,7 +1,7 @@
 @extends('template')
 @section('content')
 
-    <legend>Konta informācija</legend>
+    <legend><span class="glyphicon glyphicon-tasks" style="color: forestgreen;" aria-hidden="true"></span> Kontu informācija</legend>
 
     <table class="table table-bordered">
         <thead>
@@ -15,7 +15,7 @@
             <tr>
                 <td>{{ $a->account_number }}</td>
                 <td>&euro; {{ number_format($a->account_balance, 2, '.', ' ') }}</td>
-                <td>...</td>
+                <td><a href="{{ route('accountSummary', $a->account_ID) }}">Skatīt izrakstu</a></td>
             </tr>
         @endforeach
 

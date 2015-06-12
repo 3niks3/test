@@ -13,17 +13,21 @@ use Input;
 
 class AccountController extends Controller {
 
+	// Iegūst kontu izrakstu / transakcijas
+	public function getAccountSummary($id){
+		$t = Transaction::where('trans_account_ID_from', $id)->orWhere('trans_account_ID_to', $id)
+				->join('accounts', function ($join){
+					$join->on('transactions.trans_account_ID_from', '=' , 'accounts.account_ID')
+					   ->orOn('transactions.trans_account_ID_to', '=' , 'accounts.account_ID');
+			})
+			->orderBy('trans_ID', 'asc')->get();
+		return view('pages.summary')->with(['transactions' => $t, 'account' => Account::where('account_ID', $id)->first()]);
+	}
+
 	// Iegūst visus lietotāja kontus
 	public function getAccounts($id){
 		$accounts = Account::where('account_user_ID', $id)->get();
 		return $accounts;
-	}
-
-	// Iegūst visas izejošās un ienākošās konta transakcijas
-	public function getTransactions($id){
-		$transactions['out'] = Transaction::where('trans_account_ID_from', $id)->orderBy('trans_ID', 'asc')->get();
-		$transactions['in'] = Transaction::where('trans_account_ID_to', $id)->orderBy('trans_ID', 'asc')->get();
-		return $transactions;
 	}
 
 	// Kontu sadaļa
@@ -38,18 +42,9 @@ class AccountController extends Controller {
 		// Iegūst lietotāja kontus
 		$accounts = $this->getAccounts(Auth::user()->user_ID);
 
-		// Iegūst visu lietotāja kontu transakcijas
-		$transactions['out'] = array();
-		$transactions['in'] = array();
-		foreach($accounts as $account => $a){
-			$transactions['out'][] = $this->getTransactions($a['account_ID'])['out'];
-			$transactions['in'][] = $this->getTransactions($a['account_ID'])['in'];
-		}
-
 		// Atgriež kontu un transakciju informāciju lapā
 		return view('pages.transactions')->with([
-			'accounts' => $accounts,
-			'transactions' => $transactions
+			'accounts' => $accounts
 		]);
 	}
 
@@ -169,7 +164,7 @@ class AccountController extends Controller {
 		$token2 = $this->token2;
 
 		/* CLIENT EDIT */
-		$data['account_from'] = 'LV791638102382422EHAW'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
+		$data['account_from'] = 'LV36754Y7407ANEX'; // ŠEIT MAKSĀTĀJS NORĀDA SAVU KONTU (maksātājs ievada)
 		$data['payment_sum'] = 15.00;                 // ŠEIT NORĀDA PRECES CENU (nosaka veikals)
 		$data['payment_id'] = 34;                  // ŠEIT NORĀDA RĒĶINA NR. (nosaka veikals)
 
