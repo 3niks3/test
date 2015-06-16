@@ -14,4 +14,10 @@ class ExampleTest extends TestCase {
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
+    public function testLogin()
+    {
+        $response = $this->call('GET','/login');
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
 }
