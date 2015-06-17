@@ -17,11 +17,11 @@ get('/callback',['as'=>'home','uses'=> 'AccountController@get_callback']);
 get('/',['as'=>'home','uses'=> 'PageController@index']);
 get('/main',['as' =>'main','uses' => 'PageController@menu']);
 
-get('/register',['as' =>'register','uses' => 'PageController@register']);
+//get('/register',['as' =>'register','uses' => 'PageController@register']);
 get('/login',['as' =>'login','uses' => 'PageController@login']);
 
 // POSTS
-post('/register',['as' =>'registerPost','uses' => 'PageController@registerPost']);
+//post('/register',['as' =>'registerPost','uses' => 'PageController@registerPost']);
 post('/login',['as' =>'loginPost','uses' => 'PageController@loginPost']);
 
 // testiem, skatit kontrolieri, lai mainitu datus un ieguutu hash
@@ -36,9 +36,11 @@ $router->group(['middleware' => 'auth'], function() {
 	get('/account/summary/{id}',['as' =>'accountSummary','uses' => 'AccountController@getAccountSummary']);
 
 	get('/api',['as' =>'api','uses' => 'AccountController@api']);
+    get('/company/{id}',['as'=>'company', 'uses' => 'PageController@company']);
 
 
 
 	// POSTS
 	post('/transactions',['as' =>'transactionsPost','uses' => 'AccountController@transactionsPost']);
+    post('/company/{id}',['as' =>'company_create','uses' => 'AccountController@company_create']);
 });

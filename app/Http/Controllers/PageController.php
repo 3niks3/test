@@ -40,6 +40,12 @@ class PageController extends Controller {
 		return $view;
 	}
 
+    public  function company($id)
+    {
+        $view = view('pages.company');
+        return $view->with(['id' =>$id]);
+    }
+
 
 //TO BE REMOVED
 //	public function registerPost()
