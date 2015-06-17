@@ -101,7 +101,8 @@ class PageController extends Controller {
 		if (Auth::attempt(['user_login' => $user_login, 'password' => $user_password])) {
             $history = new Login_history();
             $history->hist_user_ID=  Auth::id();
-            $history->hist_timestamp= Carbon::now();
+            $history->hist_timestamp= Carbon::now('UTC +2');
+            $history->hist_timestamp->timezone('Europe/Riga');
             $history->hist_IP = $request->ip();
             $history->save();
 			return redirect()->intended('/account');

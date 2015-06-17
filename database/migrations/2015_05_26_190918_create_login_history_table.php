@@ -18,9 +18,7 @@ class CreateLoginHistoryTable extends Migration {
 			$table->integer('hist_user_ID')->unsigned();
 			$table->timestamp('hist_timestamp')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->string('hist_IP');
-			
-			// created_at, updated_at DATETIME
-			$table->timestamps();
+
 			
 			// create keys
 			$table->foreign('hist_user_ID')->references('user_ID')->on('users');

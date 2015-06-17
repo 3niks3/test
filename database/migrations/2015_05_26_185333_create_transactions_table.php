@@ -20,9 +20,7 @@ class CreateTransactionsTable extends Migration {
 			$table->double('trans_sum', 15, 2);
 			$table->timestamp('trans_timestamp')->default(DB::raw('CURRENT_TIMESTAMP'));;
 			$table->string('trans_note', 255);
-			
-			// created_at, updated_at DATETIME
-			$table->timestamps();
+
 			
 			// create keys
 			$table->foreign('trans_account_ID_from')->references('account_ID')->on('accounts');

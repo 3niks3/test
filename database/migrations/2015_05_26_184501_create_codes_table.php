@@ -19,8 +19,6 @@ class CreateCodesTable extends Migration {
 			$table->integer('code_number');
 			$table->string('code_code', 6);
 			
-			// created_at, updated_at DATETIME
-			$table->timestamps();
 			
 			// create keys
 			$table->foreign('code_user_ID')->references('user_ID')->on('users');
