@@ -6,7 +6,7 @@
 
     <div class="form-group">
         {!! Form::label('callback') !!}
-        {!! Form::text('callback', null, ['class'=>'form-control']) !!}
+        {!! Form::text('callback', null, ['class'=>'form-control','required' =>'required']) !!}
     </div>
 
     {!! Form::submit('Apstiprināt', ['class'=>'btn btn-danger'])!!}
