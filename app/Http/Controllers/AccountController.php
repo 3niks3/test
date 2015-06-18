@@ -474,4 +474,17 @@ class AccountController extends Controller {
 
 	}
 
+    public function company_create(Request $request, $id){
+        $company = new Company();
+        $company->company_account_ID = $id;
+        $company->public_key= rand(1000000000000000, 9999999999999999);
+        $company->token1= rand(100000,999999);
+        $company->token2= rand(100000,999999);
+        $company->callback= $request->input('callback');
+        $company->save();
+
+        return redirect('/account')->with('success', 'Reģistrācija veiksmīga!');
+    }
+
+
 }
