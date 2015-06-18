@@ -11,6 +11,7 @@
         <th>Summa</th>
         <th>Maksājuma mērķis</th>
         <th>Datums</th>
+        <th>Saglabāt kā definēto maksājumu</th>
         </thead>
         <tbody>
 
@@ -28,6 +29,9 @@
                 @endif
                 <td>{{ $t->trans_note }}</td>
                 <td>{{ date('F j, Y (H:i:s)', strtotime($t->trans_timestamp)) }}</td>
+                @if($t->trans_account_ID_to != $account->account_ID)
+                <td><a href="{{ route('Savepayment',$t->trans_ID) }}">Saglabāt</a></td>
+                @endif
             </tr>
             @endif
         @endforeach

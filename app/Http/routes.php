@@ -29,6 +29,13 @@ get('/hash',['as' =>'hash','uses' => 'AccountController@hash_openssl']);
 
 // routes require authorization
 $router->group(['middleware' => 'auth'], function() {
+
+    get('/fastpayments',['as' =>'fastpayments','uses' => 'AccountController@fastpayments']);
+    post('/fastpayments',['as' =>'fastpaymentsPost','uses' => 'AccountController@fastpaymentsPost']);
+    get('/Savepayment/{id}',['as' =>'Savepayment','uses' => 'AccountController@Savepayment']);
+    get('/transactions/{id}',['as' =>'transactionsDef','uses' => 'AccountController@transactionsDef']);
+    post('/Savepayment',['as' =>'SavepaymentPost','uses' => 'AccountController@SavepaymentPost']);
+
 	get('/logout',['as' =>'logout','uses' => 'PageController@logout']);
 	get('/account',['as' =>'account','uses' => 'AccountController@account']);
 	get('/transactions',['as' =>'transactions','uses' => 'AccountController@transactions']);

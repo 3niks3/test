@@ -10,8 +10,8 @@
     <title>iBanka</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="http://localhost/bank/public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://localhost/bank/public/css/style.css" rel="stylesheet">
 
 <body>
 
@@ -32,7 +32,8 @@
                 @if(Auth::check())
                     <li><a href="{{ url('/account') }}"><span class="glyphicon glyphicon-tasks" style="color: forestgreen;" aria-hidden="true"></span> Mani konti</a></li>
                     <li><a href="{{ url('/transactions') }}"><span class="glyphicon glyphicon-credit-card" style="color: royalblue;" aria-hidden="true"></span> Maksājumi</a></li>
-                    <li><a href="{{ url('/logout') }}"><span class="glyphicon glyphicon-remove-sign" style="color: darkred;" aria-hidden="true"></span> Iziet</a></li>
+                    <li><a href="{{ url('/fastpayments') }}"><span class="glyphicon glyphicon-book" style="color: purple;" aria-hidden="true"></span> Mani definētie maksājumi</a></li>
+                    <li><a href="{{ url('/logout') }}"><span class="glyphicon glyphicon-remove-sign" style="color: orangered;" aria-hidden="true"></span> Iziet</a></li>
                 @else
                     <li><a href="{{ url('/login') }}"><span class="glyphicon glyphicon-user" style="color: royalblue;" aria-hidden="true"></span> Autorizēties</a></li>
                 @endif
