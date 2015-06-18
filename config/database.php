@@ -55,7 +55,7 @@ return [
 		'mysql' => [
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'port'      => '33060',
+			'port'      => '3306',
 			'database'  => 'ibank',
 			'username'  => 'root',
 			'password'  => '',
